@@ -82,14 +82,14 @@ jobs:
       - name: Check if Workflow Succeeded or Failed
         id: check_status
         run: |
-          if [[ ${{ github.event.workflow_run.conclusion }} == 'success' ]]; then
+          if [[ ${{ needs.deploy_elk.result }} == 'success' ]]; then
             echo "status=success" >> $GITHUB_ENV
           else
             echo "status=failure" >> $GITHUB_ENV
           fi
 
       - name: Send Success Email Notification
-        if: env.status == 'success'
+        if: ${{ env.status == 'success' }}
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: smtp.gmail.com
@@ -112,7 +112,7 @@ jobs:
           secure: true
 
       - name: Send Failure Email Notification
-        if: env.status == 'failure'
+        if: ${{ env.status == 'failure' }}
         uses: dawidd6/action-send-mail@v4
         with:
           server_address: smtp.gmail.com
